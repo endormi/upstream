@@ -23,3 +23,9 @@ filename="tmp_file.txt"
 repo=$(cut -d "/" -f4- <<< "$url" >> $filename && sed -i 's/.git//g' $filename && cat $filename && rm $filename)
 branch=$(git remote show origin | grep "HEAD branch:" | cut -d ":" -f 2)
 list_repo_info branch.$branch.remote local
+
+fork=$(curl -sL https://api.github.com/repos/$repo | jq -r '.fork')
+if [[ $fork == "false" ]]; then
+  echo "Not a fork."
+  exit
+fi
