@@ -2,7 +2,7 @@
 
 # Check if Git is installed (just in case)
 if [[ "$(which git)" == "" ]]; then
-  echo "You need to install Git and setup the Git Configs."
+  echo "You need to install Git and setup Git Configs."
   echo -e "Follow this tutorial: \e]8;;https://git-scm.com/book/en/v2/Getting-Started-First-Time-Git-Setup\aFirst-time Git Setup\e]8;;\a."
   exit
 fi
@@ -42,3 +42,8 @@ if [[ $fork == "false" ]]; then
   echo "Not a fork."
   exit
 fi
+
+# TODO: actual upstream
+# curl -X POST -H "Accept: application/vnd.github.v3+json" \
+#      -H "Authorization: token <TOKEN>" https://api.github.com/repos/$repo/merge-upstream \
+#      -d "{'branch': $branch}"
