@@ -18,4 +18,7 @@ function list_repo_info() {
 }
 
 list_repo_info user.name
-list_repo_info remote.origin.url local
+url=$(list_repo_info remote.origin.url local)
+filename="tmp_file.txt"
+repo=$(cut -d "/" -f4- <<< "$url" >> $filename && sed -i 's/.git//g' $filename && cat $filename && rm $filename)
+echo $repo
