@@ -21,4 +21,5 @@ list_repo_info user.name
 url=$(list_repo_info remote.origin.url local)
 filename="tmp_file.txt"
 repo=$(cut -d "/" -f4- <<< "$url" >> $filename && sed -i 's/.git//g' $filename && cat $filename && rm $filename)
-echo $repo
+branch=$(git remote show origin | grep "HEAD branch:" | cut -d ":" -f 2)
+list_repo_info branch.$branch.remote local
