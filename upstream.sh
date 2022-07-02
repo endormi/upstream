@@ -1,5 +1,7 @@
 #!/bin/bash
 
+ACCESS_TOKEN=""
+
 # Check if Git is installed (just in case)
 if [[ "$(which git)" == "" ]]; then
   echo "You need to install Git and setup Git Configs."
@@ -22,6 +24,7 @@ function list_repo_info() {
   else
     arg2=""
   fi
+
   if [[ `git config --list $arg2 | grep $arg1 | wc -l` -eq 0 ]]; then
     echo "$arg1 not found!"
     exit
@@ -34,16 +37,18 @@ list_repo_info user.name
 url=$(list_repo_info remote.origin.url local)
 filename="tmp_file.txt"
 repo=$(cut -d "/" -f4- <<< "$url" >> $filename && sed -i 's/.git//g' $filename && cat $filename && rm $filename)
-branch=$(git remote show origin | grep "HEAD branch:" | cut -d ":" -f 2)
+branch=$(git remote show origin | grep "HEAD branch:" | cut -d ":" -f 2 | tr -d '[:space:]')
 list_repo_info branch.$branch.remote local
 
 fork=$(curl -sL https://api.github.com/repos/$repo | jq -r '.fork')
-if [[ $fork == "false" ]]; then
-  echo "Not a fork."
-  exit
+if [[ $fork == "true" ]]; then
+  curl \
+    -X POST \
+    -H "Accept: application/vnd.github+json" \
+    -H "Authorization: token $ACCESS_TOKEN" \
+    https://api.github.com/repos/$repo/merge-upstream \
+    -d '{"branch":"'"${branch}"'"}' --stderr - \
+    | grep message | cut -d '"' -f 4
+else
+  echo "Not a fork!"
 fi
-
-# TODO: actual upstream
-# curl -X POST -H "Accept: application/vnd.github.v3+json" \
-#      -H "Authorization: token <TOKEN>" https://api.github.com/repos/$repo/merge-upstream \
-#      -d "{'branch': $branch}"
