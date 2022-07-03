@@ -12,10 +12,26 @@ Clone the repository:
 git clone https://github.com/endormi/upstream.git
 ```
 
-The script will check the current repository so you should copy the script and place it inside the repository you want to check.
+> You have the option to check a global and/or local repository.
 
-I will maybe add an option to provide an optional argument for a repository so copying the script wouldn't be necessary.
+Run (check local repository):
 
-Reason why I made it this way for now, because I doubt many people have just one forked repository that they want to check.
+```
+chmod +x upstream.sh
+./upstream.sh
+```
 
-Check [example.sh](https://github.com/endormi/upstream/blob/main/example.sh) (just a quick script) to see how to merge-upstream multiple repositories.
+Run (check global repository):
+
+Provide the argument in the format of `owner/repository` for example `endormi/upstream`.
+
+```
+chmod +x upstream.sh
+./upstream.sh owner/repository
+```
+
+Check [local_example.sh](https://github.com/endormi/upstream/blob/main/local_example.sh) (just a quick script) to see how to merge-upstream multiple repositories locally.
+
+Check [global_example.sh](https://github.com/endormi/upstream/blob/main/global_example.sh) (just a quick script) to see how to merge-upstream multiple repositories globally.
+
+**NOTE**: Curl request to GitHub API might get rejected due to API rate-limiting (if you use it too many times).

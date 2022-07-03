@@ -34,11 +34,17 @@ function list_repo_info() {
 }
 
 list_repo_info user.name
-url=$(list_repo_info remote.origin.url local)
-filename="tmp_file.txt"
-repo=$(cut -d "/" -f4- <<< "$url" >> $filename && sed -i 's/.git//g' $filename && cat $filename && rm $filename)
-branch=$(git remote show origin | grep "HEAD branch:" | cut -d ":" -f 2 | tr -d "[:space:]")
-list_repo_info branch.$branch.remote local
+
+if [[ $1 == "" ]]; then
+  url=$(list_repo_info remote.origin.url local)
+  filename="tmp_file.txt"
+  repo=$(cut -d "/" -f4- <<< "$url" >> $filename && sed -i 's/.git//g' $filename && cat $filename && rm $filename)
+  branch=$(git remote show origin | grep "HEAD branch:" | cut -d ":" -f 2 | tr -d "[:space:]")
+  list_repo_info branch.$branch.remote local
+else
+  repo=$1
+  branch=$(curl -sL https://api.github.com/repos/$repo | jq -r '.default_branch')
+fi
 
 fork=$(curl -sL https://api.github.com/repos/$repo | jq -r '.fork')
 if [[ $fork == "true" ]]; then
