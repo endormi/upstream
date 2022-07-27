@@ -46,15 +46,10 @@ else
   branch=$(curl -sL https://api.github.com/repos/$repo | jq -r '.default_branch')
 fi
 
-fork=$(curl -sL https://api.github.com/repos/$repo | jq -r '.fork')
-if [[ $fork == "true" ]]; then
-  curl \
-    -X POST \
-    -H "Accept: application/vnd.github+json" \
-    -H "Authorization: token $ACCESS_TOKEN" \
-    https://api.github.com/repos/$repo/merge-upstream \
-    -d '{"branch":"'"${branch}"'"}' --stderr - \
-    | grep message | cut -d '"' -f 4
-else
-  echo "Not a fork!"
-fi
+curl \
+  -X POST \
+  -H "Accept: application/vnd.github+json" \
+  -H "Authorization: token $ACCESS_TOKEN" \
+  https://api.github.com/repos/$repo/merge-upstream \
+  -d '{"branch":"'"${branch}"'"}' --stderr - \
+  | grep message | cut -d '"' -f 4
